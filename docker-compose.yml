@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    environment:
+      - GATEWAY_PORT=4000
+      - RESTAURANT_SERVICE_URL=http://restaurant-service:4001
+    ports:
+      - "4000:4000"
+
+  restaurant-service:
+    build:
+      context: ./services/restaurant-service
+    environment:
+      - RESTAURANT_SERVICE_PORT=4001
+      - DB_HOST=localhost
+      - DB_USER=root
+      - DB_PASSWORD=English2024@
+      - DB_NAME=restaurant-service
+    ports:
+      - "4001:4001"
