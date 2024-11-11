@@ -1,23 +1,40 @@
-version: '3.8'
 
 services:
   api-gateway:
-    build:
-      context: ./api-gateway
-    environment:
-      - GATEWAY_PORT=4000
-      - RESTAURANT_SERVICE_URL=http://restaurant-service:4001
+    build: ./api-gateway
     ports:
       - "4000:4000"
+    depends_on:
+      - restaurant-service
+      - order-service
+      - food-service
 
   restaurant-service:
-    build:
-      context: ./services/restaurant-service
-    environment:
-      - RESTAURANT_SERVICE_PORT=4001
-      - DB_HOST=localhost
-      - DB_USER=root
-      - DB_PASSWORD=English2024@
-      - DB_NAME=restaurant-service
+    build: ./services/restaurant_service
     ports:
       - "4001:4001"
+    environment:
+      MYSQL_ROOT_PASSWORD: English2024@
+      MYSQL_DATABASE: restaurant-service
+      MYSQL_USER: root
+      MYSQL_PASSWORD: English2024@
+
+  food-service:
+    build: ./services/food_service
+    ports:
+      - "4002:4002"
+    environment:
+      MYSQL_ROOT_PASSWORD: English2024@
+      MYSQL_DATABASE: food-service
+      MYSQL_USER: root
+      MYSQL_PASSWORD: English2024@
+
+  order-service:
+    build: ./services/order_service
+    ports:
+      - "4003:4003"
+    environment:
+      MYSQL_ROOT_PASSWORD: English2024@
+      MYSQL_DATABASE: order-service
+      MYSQL_USER: root
+      MYSQL_PASSWORD: English2024@
