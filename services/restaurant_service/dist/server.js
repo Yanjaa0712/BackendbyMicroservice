@@ -1,8 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-// src/server.ts
-const app_1 = require("./app"); // Change to named import
-const PORT = process.env.RESTAURANT_SERVICE_PORT || 4001;
-app_1.app.listen(PORT, () => {
-    console.log(`Restaurant service running on port ${PORT}`);
+// food_service/src/server.ts
+const app_1 = __importDefault(require("./app"));
+const PORT = process.env.PORT || 4002;
+app_1.default.listen(PORT, () => {
+    console.log(`Restaurant service (food management) running on port ${PORT}`);
 });

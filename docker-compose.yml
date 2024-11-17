@@ -5,17 +5,17 @@ services:
     ports:
       - "4000:4000"
     depends_on:
+      - user-service
       - restaurant-service
       - order-service
-      - food-service
 
   restaurant-service:
-    build: ./services/restaurant_service
+    build: ./services/user_service
     ports:
       - "4001:4001"
     environment:
       MYSQL_ROOT_PASSWORD: English2024@
-      MYSQL_DATABASE: restaurant-service
+      MYSQL_DATABASE: user-service
       MYSQL_USER: root
       MYSQL_PASSWORD: English2024@
 
@@ -25,7 +25,7 @@ services:
       - "4002:4002"
     environment:
       MYSQL_ROOT_PASSWORD: English2024@
-      MYSQL_DATABASE: food-service
+      MYSQL_DATABASE: restaurant_service
       MYSQL_USER: root
       MYSQL_PASSWORD: English2024@
 

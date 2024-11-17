@@ -8,35 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createRestaurant = exports.getRestaurants = void 0;
-const restaurantModel_1 = __importDefault(require("../models/restaurantModel"));
-const getRestaurants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.addRestaurant = exports.getRestaurant = void 0;
+const restaurantModel_1 = require("../models/restaurantModel");
+const getRestaurant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const restaurants = yield restaurantModel_1.default.getAllRestaurants();
-        return res.json(restaurants);
+        const restaurant = yield (0, restaurantModel_1.getRestaurantInfo)();
+        res.json(restaurant);
     }
     catch (error) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        return res.status(500).json({ message: 'Error fetching restaurants', error: message });
+        res.status(500).json({ message: 'Error fetching restaurant', error });
     }
 });
-exports.getRestaurants = getRestaurants;
-const createRestaurant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name } = req.body;
-    if (!name) {
-        return res.status(400).json({ message: 'Restaurant name is required' });
-    }
+exports.getRestaurant = getRestaurant;
+const addRestaurant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, description, image, phone_number, address } = req.body;
     try {
-        const restaurantId = yield restaurantModel_1.default.createRestaurant(name);
-        return res.status(201).json({ id: restaurantId, name });
+        const result = yield (0, restaurantModel_1.createRestaurantInfo)(name, description, image, phone_number, address);
+        res.status(201).json({ message: 'Restaurant created', id: result.insertId });
     }
     catch (error) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        return res.status(500).json({ message: 'Error creating restaurant', error: message });
+        res.status(500).json({ message: 'Error creating restaurant', error });
     }
 });
-exports.createRestaurant = createRestaurant;
+exports.addRestaurant = addRestaurant;

@@ -9,21 +9,74 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.placeOrder = void 0;
-const orderModel_1 = require("../models/orderModel");
-const foodService_1 = require("../services/foodService");
-const placeOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { foodId, userId, quantity } = req.body;
+exports.updateOrder = exports.getOrderById = exports.getAllOrders = exports.createOrder = void 0;
+const orderService_1 = require("../services/orderService"); // Ensure correct import here
+const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const food = yield (0, foodService_1.getFoodById)(foodId);
-        if (!food) {
-            return res.status(404).json({ message: 'Food item not found' });
-        }
-        const result = yield (0, orderModel_1.createOrder)(foodId, userId, quantity);
-        res.status(201).json({ message: 'Order placed successfully', id: result.insertId });
+        const { food_id, user_id, quantity, order_status } = req.body;
+        const newOrder = yield (0, orderService_1.createNewOrder)(food_id, user_id, quantity, order_status);
+        res.status(201).json({ message: 'Order created successfully', order: newOrder });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error placing order', error });
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Internal Server Error', error: error.message });
+        }
+        else {
+            res.status(500).json({ message: 'Internal Server Error', error: 'An unknown error occurred' });
+        }
     }
 });
-exports.placeOrder = placeOrder;
+exports.createOrder = createOrder;
+const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const orders = yield (0, orderService_1.getOrders)();
+        res.status(200).json(orders);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Internal Server Error', error: error.message });
+        }
+        else {
+            res.status(500).json({ message: 'Internal Server Error', error: 'An unknown error occurred' });
+        }
+    }
+});
+exports.getAllOrders = getAllOrders;
+const getOrderById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const order_id = parseInt(req.params.order_id);
+        const order = yield (0, orderService_1.getOrder)(order_id); // Ensure you're calling the imported function
+        if (order) {
+            res.status(200).json(order);
+        }
+        else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Internal Server Error', error: error.message });
+        }
+        else {
+            res.status(500).json({ message: 'Internal Server Error', error: 'An unknown error occurred' });
+        }
+    }
+});
+exports.getOrderById = getOrderById;
+const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const order_id = parseInt(req.params.order_id);
+        const { order_status } = req.body;
+        const updatedOrder = yield (0, orderService_1.changeOrderStatus)(order_id, order_status);
+        res.status(200).json({ message: 'Order status updated', order: updatedOrder });
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Internal Server Error', error: error.message });
+        }
+        else {
+            res.status(500).json({ message: 'Internal Server Error', error: 'An unknown error occurred' });
+        }
+    }
+});
+exports.updateOrder = updateOrder;

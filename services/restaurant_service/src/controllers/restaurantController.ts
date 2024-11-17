@@ -1,29 +1,24 @@
 // src/controllers/restaurantController.ts
 import { Request, Response } from 'express';
-import RestaurantModel from '../models/restaurantModel';
+import { getRestaurantInfo, createRestaurantInfo } from '../models/restaurantModel';
 
-export const getRestaurants = async (req: Request, res: Response): Promise<Response> => {
+
+export const getRestaurant = async (req: Request, res: Response) => {
   try {
-    const restaurants = await RestaurantModel.getAllRestaurants();
-    return res.json(restaurants);
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return res.status(500).json({ message: 'Error fetching restaurants', error: message });
+    const restaurant = await getRestaurantInfo();
+    res.json(restaurant);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching restaurant', error });
   }
 };
 
-export const createRestaurant = async (req: Request, res: Response): Promise<Response> => {
-  const { name } = req.body;
 
-  if (!name) {
-    return res.status(400).json({ message: 'Restaurant name is required' });
-  }
-
+export const addRestaurant = async (req: Request, res: Response) => {
+  const {name, description, image, phone_number, address} = req.body;
   try {
-    const restaurantId = await RestaurantModel.createRestaurant(name);
-    return res.status(201).json({ id: restaurantId, name });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return res.status(500).json({ message: 'Error creating restaurant', error: message });
+    const result = await createRestaurantInfo(name, description, image, phone_number, address);
+    res.status(201).json({ message: 'Restaurant created', id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating restaurant', error });
   }
 };

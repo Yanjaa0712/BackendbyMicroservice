@@ -1,27 +1,17 @@
 // src/models/restaurantModel.ts
 import { Pool } from 'mysql2/promise';
-import dbConfig from '../config/dbConfig';
+import pool from '../config/dbConfig';
 import { ResultSetHeader } from 'mysql2'; // Import ResultSetHeader
 
-export class RestaurantModel {
-  private pool: Pool;
-
-  constructor() {
-    this.pool = dbConfig; // Assuming dbConfig exports a configured MySQL pool
-  }
-
-  async getAllRestaurants() {
-    const [rows] = await this.pool.query('SELECT * FROM restaurants');
-    return rows;
-  }
-
-  async createRestaurant(name: string): Promise<number> {
-    // Insert the restaurant into the database
-    const [result] = await this.pool.query<ResultSetHeader>('INSERT INTO restaurants (name) VALUES (?)', [name]);
-
-    // Access insertId from the result, which is a ResultSetHeader
-    return result.insertId; // Return the newly created restaurant ID
-  }
-}
-
-export default new RestaurantModel();
+  export const getRestaurantInfo = async () => {
+    const [restaurant] = await pool.query('SELECT * FROM restaurant_info');
+    return restaurant;
+  };
+  
+  export const createRestaurantInfo = async (name: string, description: string, image: string, phone_number: string, address: string): Promise<ResultSetHeader> => {
+      const [result] = await pool.execute<ResultSetHeader>(
+        'INSERT INTO restaurant_info (name, description, image, phone_number, address) VALUES (?, ?)',
+        [name, description, image, phone_number, address]
+      );
+      return result;
+  };

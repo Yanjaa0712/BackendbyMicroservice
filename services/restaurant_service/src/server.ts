@@ -1,8 +1,7 @@
-// src/server.ts
-import { app } from './app'; // Change to named import
+// food_service/src/server.ts
+import app from './app';
 
-const PORT = process.env.RESTAURANT_SERVICE_PORT || 4001;
-
+const PORT = process.env.PORT || 4002;
 app.listen(PORT, () => {
-  console.log(`Restaurant service running on port ${PORT}`);
+  console.log(`Restaurant service (food management) running on port ${PORT}`);
 });

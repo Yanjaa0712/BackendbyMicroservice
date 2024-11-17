@@ -12,26 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RestaurantModel = void 0;
+exports.createRestaurantInfo = exports.getRestaurantInfo = void 0;
 const dbConfig_1 = __importDefault(require("../config/dbConfig"));
-class RestaurantModel {
-    constructor() {
-        this.pool = dbConfig_1.default; // Assuming dbConfig exports a configured MySQL pool
-    }
-    getAllRestaurants() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const [rows] = yield this.pool.query('SELECT * FROM restaurants');
-            return rows;
-        });
-    }
-    createRestaurant(name) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Insert the restaurant into the database
-            const [result] = yield this.pool.query('INSERT INTO restaurants (name) VALUES (?)', [name]);
-            // Access insertId from the result, which is a ResultSetHeader
-            return result.insertId; // Return the newly created restaurant ID
-        });
-    }
-}
-exports.RestaurantModel = RestaurantModel;
-exports.default = new RestaurantModel();
+const getRestaurantInfo = () => __awaiter(void 0, void 0, void 0, function* () {
+    const [restaurant] = yield dbConfig_1.default.query('SELECT * FROM restaurant_info');
+    return restaurant;
+});
+exports.getRestaurantInfo = getRestaurantInfo;
+const createRestaurantInfo = (name, description, image, phone_number, address) => __awaiter(void 0, void 0, void 0, function* () {
+    const [result] = yield dbConfig_1.default.execute('INSERT INTO restaurant_info (name, description, image, phone_number, address) VALUES (?, ?)', [name, description, image, phone_number, address]);
+    return result;
+});
+exports.createRestaurantInfo = createRestaurantInfo;
