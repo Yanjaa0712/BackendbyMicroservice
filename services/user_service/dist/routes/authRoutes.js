@@ -11,37 +11,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authService_1 = require("../services/authService");
+const authController_1 = require("../controllers/authController");
 const router = (0, express_1.Router)();
 // Signup route
-router.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, role } = req.body;
+router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, email, password, role } = req.body;
     try {
-        const newUser = yield (0, authService_1.signup)(email, password, role);
-        res.status(201).json({ message: 'User created', user: newUser });
+        const newUser = yield (0, authService_1.signup)(username, email, password, role);
+        res.status(201).json({ message: "User created", user: newUser });
     }
     catch (error) {
         if (error instanceof Error) {
             res.status(500).json({ error: error.message });
         }
         else {
-            res.status(500).json({ error: 'An unknown error occurred' });
+            res.status(500).json({ error: "An unknown error occurred" });
         }
     }
 }));
 // Login route
-router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
         const { token, user } = yield (0, authService_1.login)(email, password);
-        res.status(200).json({ message: 'Login successful', token, user });
+        res.status(200).json({ message: "Login successful", token, user });
     }
     catch (error) {
         if (error instanceof Error) {
             res.status(400).json({ error: error.message });
         }
         else {
-            res.status(400).json({ error: 'An unknown error occurred' });
+            res.status(400).json({ error: "An unknown error occurred" });
         }
     }
 }));
+router.get("/users/:id", authController_1.getUser);
+router.get("/users", authController_1.getUserList);
 exports.default = router;
+//# sourceMappingURL=authRoutes.js.map

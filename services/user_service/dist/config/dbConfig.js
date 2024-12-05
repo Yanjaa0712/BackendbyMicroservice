@@ -15,3 +15,4 @@ pool.getConnection()
     process.exit(1); // Exit if the database connection fails
 });
 exports.default = pool;
+//# sourceMappingURL=dbConfig.js.map

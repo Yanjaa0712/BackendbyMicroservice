@@ -1,24 +1,25 @@
 // src/models/userModel.ts
-import pool from '../config/dbConfig';
+import pool from "../config/dbConfig";
 
 interface User {
   id: number;
+  username: string;
   email: string;
   password: string;
   role: string;
 }
 
 // Create a new user
-export const createUser = async (user: Omit<User, 'id'>): Promise<any> => {
+export const createUser = async (user: Omit<User, "id">): Promise<any> => {
   try {
     const [result] = await pool.execute(
-      'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
-      [user.email, user.password, user.role]
+      "INSERT INTO user (username, email, password, role) VALUES (?, ?, ?, ?)",
+      [user.username, user.email, user.password, user.role]
     );
     return result; // Return the result of the insertion
   } catch (error) {
-    console.error('Error creating user:', error);
-    throw new Error('Internal Server Error');
+    console.error("Error creating user:", error);
+    throw new Error("Internal Server Error");
   }
 };
 
@@ -26,7 +27,7 @@ export const createUser = async (user: Omit<User, 'id'>): Promise<any> => {
 export const findUserByEmail = async (email: string): Promise<User | null> => {
   try {
     const [rows]: [any[], any] = await pool.execute(
-      'SELECT * FROM users WHERE email = ?',
+      "SELECT * FROM user WHERE email = ?",
       [email]
     );
     if (Array.isArray(rows) && rows.length > 0) {
@@ -34,8 +35,8 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
     }
     return null; // No user found
   } catch (error) {
-    console.error('Error fetching user by email:', error);
-    throw new Error('Internal Server Error');
+    console.error("Error fetching user by email:", error);
+    throw new Error("Internal Server Error");
   }
 };
 
@@ -43,7 +44,7 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
 export const findUserById = async (id: number): Promise<User | null> => {
   try {
     const [rows]: [any[], any] = await pool.execute(
-      'SELECT * FROM users WHERE id = ?',
+      "SELECT * FROM user WHERE id = ?",
       [id]
     );
     if (Array.isArray(rows) && rows.length > 0) {
@@ -51,7 +52,12 @@ export const findUserById = async (id: number): Promise<User | null> => {
     }
     return null; // No user found
   } catch (error) {
-    console.error('Error fetching user by id:', error);
-    throw new Error('Internal Server Error');
+    console.error("Error fetching user by id:", error);
+    throw new Error("Internal Server Error");
   }
+};
+
+export const getAllUsers = async () => {
+  const [users] = await pool.query('SELECT * FROM user');
+  return users;
 };

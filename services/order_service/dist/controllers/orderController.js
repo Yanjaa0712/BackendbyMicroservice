@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrder = exports.getOrderById = exports.getAllOrders = exports.createOrder = void 0;
+exports.updateOrder = exports.getOrderByUser = exports.getOrderById = exports.getAllOrders = exports.createOrder = void 0;
 const orderService_1 = require("../services/orderService"); // Ensure correct import here
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { food_id, user_id, quantity, order_status } = req.body;
-        const newOrder = yield (0, orderService_1.createNewOrder)(food_id, user_id, quantity, order_status);
+        const { user_id, order_status, delivery_address, phone_number, order_type, order_time, total_amount } = req.body;
+        const newOrder = yield (0, orderService_1.createNewOrder)(user_id, order_status, delivery_address, phone_number, order_type, order_time, total_amount);
         res.status(201).json({ message: 'Order created successfully', order: newOrder });
     }
     catch (error) {
@@ -44,7 +44,7 @@ const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getAllOrders = getAllOrders;
 const getOrderById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const order_id = parseInt(req.params.order_id);
+        const order_id = parseInt(req.params.id);
         const order = yield (0, orderService_1.getOrder)(order_id); // Ensure you're calling the imported function
         if (order) {
             res.status(200).json(order);
@@ -63,11 +63,32 @@ const getOrderById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getOrderById = getOrderById;
+const getOrderByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const order_id = parseInt(req.params.id);
+        const order = yield (0, orderService_1.getUserOrder)(order_id); // Ensure you're calling the imported function
+        if (order) {
+            res.status(200).json(order);
+        }
+        else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Internal Server Error', error: error.message });
+        }
+        else {
+            res.status(500).json({ message: 'Internal Server Error', error: 'An unknown error occurred' });
+        }
+    }
+});
+exports.getOrderByUser = getOrderByUser;
 const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const order_id = parseInt(req.params.order_id);
+        const id = parseInt(req.params.id);
         const { order_status } = req.body;
-        const updatedOrder = yield (0, orderService_1.changeOrderStatus)(order_id, order_status);
+        const updatedOrder = yield (0, orderService_1.changeOrderStatus)(id, order_status);
         res.status(200).json({ message: 'Order status updated', order: updatedOrder });
     }
     catch (error) {

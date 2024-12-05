@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFoodById = exports.addFood = exports.getFoods = void 0;
+exports.deleteFoodById = exports.getFoodById = exports.addFood = exports.getFoods = void 0;
 const foodModel_1 = require("../models/foodModel");
 const getFoods = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -22,9 +22,9 @@ const getFoods = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getFoods = getFoods;
 const addFood = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, price, type, image, description } = req.body;
+    const { name, price, categoryID, image, description } = req.body;
     try {
-        const result = yield (0, foodModel_1.createFood)(name, price, type, image, description);
+        const result = yield (0, foodModel_1.createFood)(name, price, categoryID, image, description);
         res.status(201).json({ message: 'Food item created', id: result.insertId });
     }
     catch (error) {
@@ -46,3 +46,17 @@ const getFoodById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getFoodById = getFoodById;
+const deleteFoodById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const success = yield (0, foodModel_1.deleteFood)(Number(id));
+        if (!success) {
+            return res.status(404).json({ message: 'Food item not found' });
+        }
+        res.json({ message: 'Food item deleted successfully' });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error deleting food item', error });
+    }
+});
+exports.deleteFoodById = deleteFoodById;

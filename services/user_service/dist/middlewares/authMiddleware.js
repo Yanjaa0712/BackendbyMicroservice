@@ -28,3 +28,4 @@ const checkRole = (role) => {
     };
 };
 exports.checkRole = checkRole;
+//# sourceMappingURL=authMiddleware.js.map

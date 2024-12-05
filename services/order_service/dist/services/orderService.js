@@ -9,18 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeOrderStatus = exports.getOrder = exports.getOrders = exports.createNewOrder = void 0;
+exports.changeOrderStatus = exports.getUserOrder = exports.getOrder = exports.getOrders = exports.createNewOrder = void 0;
 // src/services/orderService.ts
 const orderModel_1 = require("../models/orderModel");
-const createNewOrder = (food_id, user_id, quantity, order_status) => __awaiter(void 0, void 0, void 0, function* () {
+const createNewOrder = (user_id, order_status, delivery_address, phone_number, order_type, order_time, total_amount) => __awaiter(void 0, void 0, void 0, function* () {
     // Add missing fields: `order_create_date` and `order_update_date`
     const newOrder = {
-        food_id,
         user_id,
-        quantity,
         order_status,
-        order_create_date: new Date(),
-        order_update_date: new Date() // current date-time for update
+        delivery_address,
+        phone_number,
+        order_type,
+        order_time,
+        total_amount,
     };
     const createdOrder = yield (0, orderModel_1.createOrder)(newOrder);
     return createdOrder;
@@ -31,13 +32,18 @@ const getOrders = () => __awaiter(void 0, void 0, void 0, function* () {
     return orders;
 });
 exports.getOrders = getOrders;
-const getOrder = (order_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const order = yield (0, orderModel_1.getOrderById)(order_id);
+const getOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const order = yield (0, orderModel_1.getOrderById)(id);
     return order;
 });
 exports.getOrder = getOrder;
-const changeOrderStatus = (order_id, status) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatedOrder = yield (0, orderModel_1.updateOrderStatus)(order_id, status);
+const getUserOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const order = yield (0, orderModel_1.getOrderByUser)(id);
+    return order;
+});
+exports.getUserOrder = getUserOrder;
+const changeOrderStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedOrder = yield (0, orderModel_1.updateOrderStatus)(id, status);
     return updatedOrder;
 });
 exports.changeOrderStatus = changeOrderStatus;

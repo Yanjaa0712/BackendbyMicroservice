@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "start": "tsc && nodemon dist/server.js",
-    "dev": "ts-node-dev src/server.ts"
+    "dev": "ts-node-dev src/server.ts",
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

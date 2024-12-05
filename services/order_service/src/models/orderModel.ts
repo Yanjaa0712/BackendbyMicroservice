@@ -1,38 +1,52 @@
 // src/models/orderModel.ts
-import pool from '../config/dbConfig';
+import pool from "../config/dbConfig";
 
 interface Order {
-  order_id: number;
-  food_id: number;
+  id: number;
   user_id: number;
-  quantity: number;
-  order_create_date: Date;
-  order_update_date: Date;
-  order_status: 'pending' | 'completed' | 'canceled';
+  order_status: string;
+  delivery_address: string;
+  phone_number: string;
+  order_type: string;
+  order_time: string;
+  total_amount: number;
 }
 
-export const createOrder = async (order: Omit<Order, 'order_id'>) => {
+export const createOrder = async (order: Omit<Order, "id">) => {
   const [rows] = await pool.execute(
-    'INSERT INTO orders (food_id, user_id, quantity, order_status) VALUES (?, ?, ?, ?)',
-    [order.food_id, order.user_id, order.quantity, order.order_status]
+    "INSERT INTO orders (user_id, order_status, delivery_address, phone_number, order_type, order_time, total_amount) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [
+      order.user_id,
+      order.order_status,
+      order.delivery_address,
+      order.phone_number,
+      order.order_type,
+      order.order_time,
+      order.total_amount,
+    ]
   );
   return rows;
 };
 
 export const getAllOrders = async () => {
-  const [rows] = await pool.execute('SELECT * FROM orders');
+  const [rows] = await pool.execute("SELECT * FROM orders");
   return rows;
 };
 
-export const getOrderById = async (order_id: number) => {
-  const [rows] = await pool.execute('SELECT * FROM orders WHERE order_id = ?', [order_id]);
+export const getOrderById = async (id: number) => {
+  const [rows] = await pool.execute("SELECT * FROM orders WHERE id = ?", [id]);
   return rows;
 };
 
-export const updateOrderStatus = async (order_id: number, status: 'pending' | 'completed' | 'canceled') => {
+export const getOrderByUser = async (id: number) => {
+  const [rows] = await pool.execute("SELECT * FROM orders WHERE user_id = ?", [id]);
+  return rows;
+};
+
+export const updateOrderStatus = async (id: number, status: string) => {
   const [rows] = await pool.execute(
-    'UPDATE orders SET order_status = ?, order_update_date = CURRENT_TIMESTAMP WHERE order_id = ?',
-    [status, order_id]
+    "UPDATE orders SET order_status = ?, updated_date = CURRENT_TIMESTAMP WHERE id = ?",
+    [status, id]
   );
   return rows;
 };
